@@ -40,4 +40,32 @@ RSpec.describe ReviewsController, :type => :controller do
   		expect(response).to render_template :new
   	end
   end
+
+  describe "Post #create" do
+  	context "with valid attributes" do
+  		it "saves new review to database" do
+  			expect {
+  				post :create, review: attributes_for(:review)
+  			}.to change(Review, :count).by(1)
+  		end
+
+  		it "redirects to review #show" do
+  			post :create, review: attributes_for(:review)
+  			expect(response).to redirect_to review_path(assigns(:review))
+  		end
+  	end
+
+  	context "with invalid attributes" do
+  		it "does not save review to database" do
+  			expect {
+  				post :create, review: {title: nil, body: "Hello world"}
+  			}.to change(Review, :count).by(0)
+  		end
+
+  		it "renders the new template" do
+  			post :create, review: {title: nil, body: "Hello world"}
+  			expect(response).to render_template :new
+  		end
+  	end
+  end
 end

@@ -12,9 +12,22 @@ class ReviewsController < ApplicationController
     @review = Review.new
 	end
 
+	def create
+		@review = Review.new(review_params)
+		if @review.save
+			redirect_to review_path(@review)
+		else
+			render :new
+		end
+	end
+
 	private 
 
 	def get_review
 		@review = Review.find(params[:id])
+	end
+
+	def review_params
+		params.require(:review).permit(:title, :body)
 	end
 end
