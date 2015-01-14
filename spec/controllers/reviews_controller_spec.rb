@@ -41,6 +41,20 @@ RSpec.describe ReviewsController, :type => :controller do
   	end
   end
 
+  describe "Get #edit" do
+  	it "assigns the requested review to @review" do
+  		review = create(:review)
+  		get :edit, id: review
+  		expect(assigns(:review)).to eq review
+  	end
+
+  	it "renders the :edit template" do
+  		review = create(:review)
+  		get :edit, id: review
+  		expect(response).to render_template :edit
+  	end
+  end
+
   describe "Post #create" do
   	context "with valid attributes" do
   		it "saves new review to database" do
@@ -67,5 +81,43 @@ RSpec.describe ReviewsController, :type => :controller do
   			expect(response).to render_template :new
   		end
   	end
+  end
+
+  describe "Patch #update" do
+  	before :each do
+  		@review = create(:review)
+  	end
+
+  	it "located the requested review" do
+  		patch :update, id: @review, review: attributes_for(:review)
+  		expect(assigns(:review)).to eq @review
+  	end
+
+    context "with valid attributes" do
+    	it "changes @review's attributes" do
+	    	patch :update, id: @review, review: attributes_for(:review, title: "updated", body: "hello update")
+	    	@review.reload
+	    	expect(@review.title).to eq "updated"
+	    	expect(@review.body).to eq "hello update"
+	    end
+
+	    it "redirects to review" do
+	    	patch :update, id: @review, review: attributes_for(:review)
+	    	expect(response).to redirect_to @review
+	    end
+    end
+    
+    context "with invalid attributes" do
+    	it "does not change @review's attributes" do
+    		patch :update, id: @review, review:attributes_for(:review, title: nil)
+    		@review.reload
+    		expect(@review.title).to eq "Mario Kart 8"
+    	end
+
+    	it "renders edit template" do
+    		patch :update, id: @review, review:attributes_for(:review, title: nil)
+    		expect(response).to render_template :edit
+    	end
+    end
   end
 end

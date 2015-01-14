@@ -1,5 +1,5 @@
 class ReviewsController < ApplicationController
-	before_action :get_review, only: [:show]
+	before_action :get_review, only: [:show, :edit, :update]
 
 	def index
 		@reviews = Review.all
@@ -19,6 +19,17 @@ class ReviewsController < ApplicationController
 		else
 			render :new
 		end
+	end
+
+	def edit
+	end
+
+	def update
+    if @review.update(review_params)
+    	redirect_to @review
+    else
+    	render :edit
+    end
 	end
 
 	private 
